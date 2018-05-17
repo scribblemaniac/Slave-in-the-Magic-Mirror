@@ -143,29 +143,29 @@ UDIFResourceFile = construct.Struct("UDIFResourceFile",
     construct.UBInt32("fUDIFVersion"),
     construct.UBInt32("fUDIFHeaderSize"),
     construct.UBInt32("fUDIFFlags"),
-    
+
     construct.UBInt64("fUDIFRunningDataForkOffset"),
     construct.UBInt64("fUDIFDataForkOffset"),
     construct.UBInt64("fUDIFDataForkLength"),
     construct.UBInt64("fUDIFRsrcForkOffset"),
     construct.UBInt64("fUDIFRsrcForkLength"),
-    
+
     construct.UBInt32("fUDIFSegmentNumber"),
     construct.UBInt32("fUDIFSegmentCount"),
     construct.Array(4, construct.UBInt32("fUDIFSegmentID")),
-    
+
     construct.Rename("fUDIFDataForkChecksum", UDIFChecksum),
-    
+
     construct.UBInt64("fUDIFXMLOffset"), # 0xd8
     construct.UBInt64("fUDIFXMLLength"),
-    
+
     construct.Padding(0x78),
-    
+
     construct.Rename("fUDIFMasterChecksum", UDIFChecksum),
-    
+
     construct.UBInt32("fUDIFImageVariant"),
     construct.UBInt64("fUDIFSectorCount"),
-    
+
     construct.UBInt32("_reserved2"),
     construct.UBInt32("_reserved3"),
     construct.UBInt32("_reserved4"),)
@@ -183,11 +183,11 @@ BLKXTable = construct.Struct("BLKXTable",
     construct.UBInt32("infoVersion"),
     construct.UBInt64("firstSectorNumber"),
     construct.UBInt64("sectorCount"),
-    
+
     construct.UBInt64("dataStart"),
     construct.UBInt32("decompressBufferRequested"),
     construct.UBInt32("blocksDescriptor"),
-    
+
     construct.UBInt32("_reserved1"),
     construct.UBInt32("_reserved2"),
     construct.UBInt32("_reserved3"),
@@ -247,7 +247,7 @@ class DMG(BaseFile):
         if i in self.run_cache: return self.run_cache[i]
 
         run = self.runs[i]
-        
+
         if run.type == BLOCK_RAW:
             self.f.seek(self.data_start + run.compOffset)
             r = self.f.read(run.compLength)
@@ -309,17 +309,8 @@ def download_file(url, out):
     print
 
 def main():
-    print "Looking up key..."
-    key_resp = requests.get('https://ipsw.me/keys/AppleTV2,1/9A334v',
-            headers={'User-Agent': 'get_airtunesd.py'},
-            verify=False)
-    key_html = key_resp.content
-    key_soup = BeautifulSoup(key_html)
-    key_row = key_soup.find("td", text="RootFileSystem").parent
-    key_cell = key_row.find("td", "key")
-    key_text = key_cell.text
-    root_key = key_text.decode("hex")
-    print "Done!", key_text
+    # Retrieved from https://www.theiphonewiki.com/wiki/Telluride_9A334v_(AppleTV2,1)
+    root_key = "e04125691fea59da7bedc605667f459c78d243d1b4df4c6127d154dc84b3657902538aee".decode("hex")
 
     ipsw_filename = "AppleTV2,1_4.4_9A334v_Restore.ipsw"
     ipsw_url = "http://appldnld.apple.com/AppleTV/061-9621.20111012.Vgijx/AppleTV2,1_4.4_9A334v_Restore.ipsw"
